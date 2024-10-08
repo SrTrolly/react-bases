@@ -1,35 +1,44 @@
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from "react-router-dom"
+import { routes } from "./routes"
+import { Suspense } from "react"
 
 
 export const Navigation = () => {
     return (
-        <BrowserRouter>
-            <div className="main-layout">
-                <nav>
-                    <img src="" alt="React Logo" />
-                    <ul>
-                        <li>
-                            <NavLink to="home" className={({ isActive }) => isActive ? 'nav-active' : ''} >Home</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/about" className={({ isActive }) => isActive ? 'nav-active' : ''} >About</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/users" className={({ isActive }) => isActive ? 'nav-active' : ''} >Users</NavLink>
-                        </li>
-                    </ul>
-                </nav>
 
-                <Routes>
-                    <Route path="about" element={<h1>About Page</h1>}></Route>
-                    <Route path="users" element={<h1>Users Page</h1>}></Route>
-                    <Route path="home" element={<h1>Home Page</h1>}></Route>
+        <Suspense>
+            <BrowserRouter>
+                <div className="main-layout">
+                    <nav>
+                        <img src="../assets/react.svg" alt="React Logo" />
+                        <ul>
 
-                    <Route path="/*" element={<Navigate to="/home" replace></Navigate>}></Route>
-                </Routes>
+                            {
+                                routes.map(route => (
+
+                                    <li key={route.to}>
+                                        <NavLink to={route.to} className={({ isActive }) => isActive ? 'nav-active' : ''} > {route.name}</NavLink>
+                                    </li>
+
+                                ))
+                            }
+                        </ul>
+                    </nav>
+
+                    <Routes>
+
+                        {
+                            routes.map(route => (
+                                <Route key={route.to} path={route.path} element={<route.Component></route.Component>}></Route>
+                            ))
+                        }
+
+                        <Route path="/*" element={<Navigate to={routes[0].to} replace></Navigate>}></Route>
+                    </Routes>
 
 
-            </div>
-        </BrowserRouter>
+                </div>
+            </BrowserRouter>
+        </Suspense>
     )
 }
